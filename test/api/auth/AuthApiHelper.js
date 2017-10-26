@@ -616,6 +616,59 @@ describe('AuthApiHelper', function() {
     });
   });
 
+  describe('update User', function() {
+    beforeEach(function() {
+      RequestMock.setup('PATCH', 'http://localhost/users/id');
+    });
+
+    it('should throw exception when calling updateUser without user having id', function() {
+      const auth = WeDeploy.auth('http://localhost');
+      auth.currentUser = {};
+      assert.throws(() => auth.updateUser(), Error);
+    });
+
+    it('should throw exception when calling updateUser without user having data', function() {
+      const auth = WeDeploy.auth('http://localhost');
+      auth.currentUser = {};
+      assert.throws(() => auth.updateUser('id'), Error);
+    });
+
+    it('should call updateUser successfully', function(done) {
+      const auth = WeDeploy.auth('http://localhost');
+      auth.currentUser = {};
+      RequestMock.intercept('PATCH', 'http://localhost/users/id').reply(200);
+      auth.updateUser('id', {}).then(() => done());
+    });
+
+    it('should call updateUser unsuccessfully', function(done) {
+      const auth = WeDeploy.auth('http://localhost');
+      auth.currentUser = {};
+      RequestMock.intercept('PATCH', 'http://localhost/users/id').reply(400);
+      auth.updateUser('id', {}).catch(() => done());
+    });
+
+    it('should call updateUser unsuccessfully with error response as reason', function(
+      done
+    ) {
+      const auth = WeDeploy.auth('http://localhost');
+      auth.currentUser = {};
+      const responseErrorObject = {
+        error: true,
+      };
+      RequestMock.intercept('PATCH', 'http://localhost/users/id').reply(
+        400,
+        JSON.stringify(responseErrorObject),
+        {
+          'content-type': 'application/json',
+        }
+      );
+      auth.updateUser('id', {}).catch(reason => {
+        assert.deepEqual(responseErrorObject, reason);
+        done();
+      });
+    });
+  });
+
   describe('delete User', function() {
     beforeEach(function() {
       RequestMock.setup('DELETE', 'http://localhost/users/id');

@@ -151,6 +151,23 @@ class AuthApiHelper extends ApiHelper {
   }
 
   /**
+   * Updates user by id.
+   * @param {!string} userId
+   * @param {!Object} data
+   * @return {CancellablePromise}
+   */
+  updateUser(userId, data) {
+    assertDefAndNotNull(userId, 'Cannot delete user without id');
+    assertObject(data, 'User data must be specified as object');
+    assertUserSignedIn(this.currentUser);
+    return this.buildUrl_()
+      .path('/users', userId)
+      .auth(this.resolveAuthScope().token)
+      .patch(data)
+      .then(response => assertResponseSucceeded(response));
+  }
+
+  /**
    * Gets all auth users
    * @param {!string} userId
    * @return {CancellablePromise}
