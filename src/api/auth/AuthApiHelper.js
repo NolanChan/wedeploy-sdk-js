@@ -39,6 +39,7 @@ import GoogleAuthProvider from './GoogleAuthProvider';
 import {Storage, LocalStorageMechanism} from 'metal-storage';
 
 import {
+	assertAuthScope,
   assertDefAndNotNull,
   assertFunction,
   assertObject,
@@ -142,7 +143,7 @@ class AuthApiHelper extends ApiHelper {
    */
   deleteUser(userId) {
     assertDefAndNotNull(userId, 'Cannot delete user without id');
-    assertUserSignedIn(this.currentUser);
+    assertAuthScope(this);
     return this.buildUrl_()
       .path('/users', userId)
       .auth(this.resolveAuthScope().token)
@@ -156,7 +157,7 @@ class AuthApiHelper extends ApiHelper {
    * @return {CancellablePromise}
    */
   getAllUsers() {
-    assertUserSignedIn(this.currentUser);
+    assertAuthScope(this);
     return this.buildUrl_()
       .path('/users')
       .auth(this.resolveAuthScope().token)
@@ -203,7 +204,7 @@ class AuthApiHelper extends ApiHelper {
 	 */
   getUser(userId) {
     assertDefAndNotNull(userId, 'User userId must be specified');
-    assertUserSignedIn(this.currentUser);
+    assertAuthScope(this);
     return this.buildUrl_()
       .path('/users', userId)
       .auth(this.resolveAuthScope().token)

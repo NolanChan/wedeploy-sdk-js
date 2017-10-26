@@ -513,7 +513,7 @@ describe('AuthApiHelper', function() {
 
     it('should call getUser successfully', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       RequestMock.intercept().reply(200);
       auth.getUser('userId').then(user => {
         assert.ok(user instanceof Auth);
@@ -523,7 +523,7 @@ describe('AuthApiHelper', function() {
 
     it('should call getUser unsuccessfully', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       RequestMock.intercept().reply(400);
       auth.getUser('userId').catch(() => done());
     });
@@ -532,7 +532,7 @@ describe('AuthApiHelper', function() {
       done
     ) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       const responseErrorObject = {
         error: true,
       };
@@ -547,7 +547,7 @@ describe('AuthApiHelper', function() {
 
     it('should set headers on getUser', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       RequestMock.intercept().reply(200);
       auth
         .header('TestHost', 'localhost')
@@ -580,7 +580,7 @@ describe('AuthApiHelper', function() {
 
     it('should call getAllUsers successfully', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       const user1 = {
         createdAt: 'createdAt1',
         email: 'email1',
@@ -610,7 +610,7 @@ describe('AuthApiHelper', function() {
 
     it('should call getAllUsers unsuccessfully', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       RequestMock.intercept().reply(400);
       auth.getAllUsers().catch(() => done());
     });
@@ -628,14 +628,14 @@ describe('AuthApiHelper', function() {
 
     it('should call deleteUser successfully', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       RequestMock.intercept('DELETE', 'http://localhost/users/id').reply(200);
       auth.deleteUser('id').then(() => done());
     });
 
     it('should call deleteUser unsuccessfully', function(done) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       RequestMock.intercept('DELETE', 'http://localhost/users/id').reply(400);
       auth.deleteUser('id').catch(() => done());
     });
@@ -644,7 +644,7 @@ describe('AuthApiHelper', function() {
       done
     ) {
       const auth = WeDeploy.auth('http://localhost');
-      auth.currentUser = {};
+      auth.currentUser = {token: 'token'};
       const responseErrorObject = {
         error: true,
       };

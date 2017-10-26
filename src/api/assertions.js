@@ -126,6 +126,17 @@ function assertUserSignedIn(user) {
 }
 
 /**
+ * Checks if authApiHelper has a token in its authScope
+ * @param {!AuthApiHelper} authApiHelper - The user to be checked.
+ */
+function assertAuthScope(authApiHelper) {
+	const authScope = authApiHelper.resolveAuthScope();
+	if (!authScope || !authScope.token) {
+		throw new Error('You must have some type of authorization');
+	}
+}
+
+/**
  * Checks if an URL with a valid path is provided. Throws an exception
  * if the provided URL doesn't have a valid path.
  * @param {!string} url The URL to be checked.
@@ -168,6 +179,7 @@ function assertValidFieldTypes(fieldTypes) {
 }
 
 export {
+	assertAuthScope,
   assertBrowserEnvironment,
   assertDefAndNotNull,
   assertFunction,
