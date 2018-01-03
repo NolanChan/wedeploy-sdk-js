@@ -54,7 +54,7 @@ class NodeTransport extends Transport {
       clientRequest.headers(),
       clientRequest.params(),
       null,
-      false
+      clientRequest.followRedirect()
     );
 
     return deferred.then(function(response) {
@@ -79,10 +79,19 @@ class NodeTransport extends Transport {
 	 * @param {MultiMap} opt_headers
 	 * @param {MultiMap} opt_params
 	 * @param {number=} opt_timeout
+   * @param {boolean} opt_follow_redirect
 	 * @return {CancellablePromise} Deferred ajax request.
 	 * @protected
 	 */
-  request(url, method, body, opt_headers, opt_params, opt_timeout) {
+  request(
+    url,
+    method,
+    body,
+    opt_headers,
+    opt_params,
+    opt_timeout,
+    opt_follow_redirect
+  ) {
     url = new Uri(url);
 
     if (url.isUsingDefaultProtocol()) {
@@ -120,6 +129,11 @@ class NodeTransport extends Transport {
 
     if (opt_timeout) {
       options.timeout = opt_timeout;
+    }
+
+    if (!opt_follow_redirect) {
+      options.followRedirect = false;
+      options.simple = false;
     }
 
     let connection;

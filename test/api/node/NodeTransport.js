@@ -181,6 +181,72 @@ describe('NodeTransport', function() {
       });
   });
 
+  it('it should be redirected if followRedirect is true', function(done) {
+    RequestMock.intercept('GET', 'http://localhost/final').reply(
+      200,
+      'The End'
+    );
+    RequestMock.intercept('GET', 'http://localhost/redirected').reply(
+      302,
+      undefined,
+      {
+        Location: 'http://localhost/final',
+      }
+    );
+
+    const transport = new NodeTransport();
+    const clientRequest = new ClientRequest();
+    clientRequest.url('http://localhost/redirected');
+    transport
+      .request(
+        clientRequest.url(),
+        clientRequest.method(),
+        null,
+        null,
+        null,
+        null,
+        true
+      )
+      .then(function(xhrResponse) {
+        assert.strictEqual(xhrResponse.statusCode, 200);
+        assert.strictEqual(xhrResponse.body, 'The End');
+        done();
+      });
+  });
+
+  it('it should return redirect url but not follow redirect if followRedirect is false', function(
+    done
+  ) {
+    RequestMock.intercept('GET', 'http://localhost/redirected')
+      .reply(302, undefined, {
+        Location: 'http://localhost/final',
+      })
+      .intercept('GET', 'http://localhost/final')
+      .reply(200, 'The End');
+
+    const transport = new NodeTransport();
+    const clientRequest = new ClientRequest();
+    clientRequest.url('http://localhost/redirected');
+    transport
+      .request(
+        clientRequest.url(),
+        clientRequest.method(),
+        null,
+        null,
+        null,
+        null,
+        false
+      )
+      .then(function(xhrResponse) {
+        assert.strictEqual(
+          'http://localhost/final',
+          xhrResponse.headers.location
+        );
+        assert.strictEqual(xhrResponse.body, '');
+        done();
+      });
+  });
+
   it('should cancel request if given timeout is reached', function(done) {
     RequestMock.intercept('GET', 'http://localhost/url?foo=1')
       .socketDelay(5)

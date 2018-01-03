@@ -44,6 +44,10 @@ class AjaxTransport extends Transport {
 	 * @inheritDoc
 	 */
   send(clientRequest) {
+    if (!clientRequest.followRedirect()) {
+      console.warn('Disabling redirects is not supported in the browser');
+    }
+
     let url = new Uri(clientRequest.url());
 
     if (url.isUsingDefaultProtocol()) {

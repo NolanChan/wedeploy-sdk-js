@@ -88,6 +88,7 @@ class WeDeploy {
     this.headers_ = new MultiMap();
     this.params_ = new MultiMap();
     this.withCredentials_ = false;
+    this.followRedirect_ = true;
 
     this.header('Content-Type', 'application/json');
     this.header('X-Requested-With', 'XMLHttpRequest');
@@ -199,6 +200,7 @@ class WeDeploy {
     clientRequest.params(this.params());
     clientRequest.url(this.url());
     clientRequest.withCredentials(this.withCredentials_);
+    clientRequest.followRedirect(this.followRedirect_);
 
     this.encode(clientRequest);
 
@@ -535,6 +537,17 @@ class WeDeploy {
 	 */
   url() {
     return this.url_;
+  }
+
+  /**
+   * Indicate whether or not to follow redirects.
+   * @param {!boolean} followRedirect
+   * @return {WeDeploy} Returns the {@link WeDeploy} object itself, so calls can
+	 *   be chained.
+   */
+  followRedirect(followRedirect) {
+    this.followRedirect_ = followRedirect;
+    return this;
   }
 
   /**

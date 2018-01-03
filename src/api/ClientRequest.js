@@ -47,6 +47,7 @@ class ClientRequest extends ClientMessage {
     super();
     this.params_ = new MultiMap();
     this.withCredentials_ = false;
+    this.followRedirect_ = true;
   }
 
   /**
@@ -63,6 +64,22 @@ class ClientRequest extends ClientMessage {
       return this;
     }
     return this.withCredentials_;
+  }
+
+  /**
+	 * Fluent getter and setter for follow redirect option.
+	 * @param {boolean=} opt_followRedirect
+	 * @return {!ClientRequest|boolean} Returns the {@link ClientMessage} object
+	 *   itself when used as setter, otherwise returns the current value of follow
+	 *   redirect option.
+	 * @chainable Chainable when used as setter.
+	 */
+  followRedirect(opt_followRedirect) {
+    if (core.isDef(opt_followRedirect)) {
+      this.followRedirect_ = !!opt_followRedirect;
+      return this;
+    }
+    return this.followRedirect_;
   }
 
   /**

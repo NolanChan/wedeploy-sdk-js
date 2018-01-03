@@ -35,6 +35,7 @@ import Embodied from '../../src/api-query/Embodied';
 import Filter from '../../src/api-query/Filter';
 import WeDeploy from '../../src/api/WeDeploy';
 import Transport from '../../src/api/Transport';
+import NodeRequestMock from '../fixtures/node/NodeRequestMock';
 
 /* eslint-disable max-len,require-jsdoc */
 describe('WeDeploy Tests', function() {
@@ -647,6 +648,62 @@ describe('WeDeploy Tests', function() {
         const body = response.request().body();
         assert.ok(!(body instanceof FormData));
         assert.strictEqual('{}', body);
+        done();
+      });
+  });
+
+  it('it should follow redirect if followRedirect is true * For node requests only', function(
+    done
+  ) {
+    if (RequestMock !== NodeRequestMock) {
+      done();
+    }
+    RequestMock.intercept('GET', 'http://localhost/final').reply(
+      200,
+      'The End'
+    );
+    RequestMock.intercept('GET', 'http://localhost/redirected').reply(
+      302,
+      undefined,
+      {
+        Location: 'http://localhost/final',
+      }
+    );
+
+    WeDeploy.url('http://localhost/redirected')
+      .followRedirect(true)
+      .get()
+      .then(function(response) {
+        assert.strictEqual(response.statusCode(), 200);
+        assert.strictEqual(response.body(), 'The End');
+        done();
+      });
+  });
+
+  it('it should not follow redirects if followRedirect is false * For node requests only', function(
+    done
+  ) {
+    if (RequestMock !== NodeRequestMock) {
+      done();
+    }
+    RequestMock.intercept('GET', 'http://localhost/final').reply(
+      200,
+      'The End'
+    );
+    RequestMock.intercept('GET', 'http://localhost/redirected').reply(
+      302,
+      undefined,
+      {
+        Location: 'http://localhost/final',
+      }
+    );
+
+    WeDeploy.url('http://localhost/redirected')
+      .followRedirect(false)
+      .get()
+      .then(function(response) {
+        assert.strictEqual(response.statusCode(), 302);
+        assert.strictEqual(response.body(), '');
         done();
       });
   });
